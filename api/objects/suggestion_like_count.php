@@ -116,4 +116,28 @@ class SuggestionLikeCount
 
         return false;
     }
+
+    function getLikeList()
+    {
+
+        // query to insert record
+        $query = "SELECT username FROM
+                " . $this->table_name . " AS S
+                LEFT JOIN USERS AS U ON S.author_id = U.id
+            WHERE
+                suggestion_id=:suggestion_id";
+
+        // prepare query
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->suggestion_id = htmlspecialchars(strip_tags($this->suggestion_id));
+
+        // bind values
+        $stmt->bindParam(":suggestion_id", $this->suggestion_id);
+
+        // execute the query
+        $stmt->execute();
+        return $stmt;
+    }
 }
