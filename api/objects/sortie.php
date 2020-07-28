@@ -92,7 +92,7 @@ class Sortie
         $query = "SELECT * 
                   FROM " . $this->table_name . " 
                   ORDER BY running_date DESC
-                  LIMIT 1 ";
+                  LIMIT 1";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

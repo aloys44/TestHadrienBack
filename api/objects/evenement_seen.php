@@ -27,8 +27,7 @@ class Evenement_Seen
                     " . $this->table_name . "
                 SET
                     evenement_id=:evenement_id, 
-                    user_id=:user_id, 
-                    is_seen=:is_seen";
+                    user_id=:user_id";
     
             // prepare query
             $stmt = $this->conn->prepare($query);
@@ -36,12 +35,10 @@ class Evenement_Seen
             // sanitize
             $this->evenement_id = htmlspecialchars(strip_tags($this->evenement_id));
             $this->user_id = htmlspecialchars(strip_tags($this->user_id));
-            $this->is_seen = htmlspecialchars(strip_tags($this->is_seen));
     
             // bind values
             $stmt->bindParam(":evenement_id", $this->evenement_id);
             $stmt->bindParam(":user_id", $this->user_id);
-            $stmt->bindParam(":is_seen", $this->is_seen);
     
             // execute query
             if ($stmt->execute()) {
@@ -124,7 +121,7 @@ class Evenement_Seen
         $query = "SELECT id,title,description,creation_date,author,occured_date,status FROM
                 " . $this->table_name . " AS S
                 LEFT JOIN EVENEMENTS AS E ON S.evenement_id = E.id
-                NOT IN(user_id)
+                WHERE is_seen < E.creation_date
                 ";
 
         // prepare query
@@ -140,4 +137,6 @@ class Evenement_Seen
         $stmt->execute();
         return $stmt;
     }
+
+    
 }

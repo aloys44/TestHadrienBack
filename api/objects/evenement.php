@@ -81,16 +81,18 @@ class Evenement
         // select all query
         $query = "SELECT * 
                   FROM " . $this->table_name . " 
-                  ORDER BY occured_date DESC
-                  LIMIT 1 ";
+                  ORDER BY creation_date DESC
+                  LIMIT 1";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
         // execute query
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $stmt;
     }
+
 
     function updateCourse()
     {

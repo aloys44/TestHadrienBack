@@ -28,7 +28,6 @@ $data = json_decode(file_get_contents("php://input"));
 // make sure data is not empty
 if (
     !empty($data->id) &&
-    isset($data->is_seen) &&
     !empty($data->auth_token)
 ) {
     // set product property values
@@ -38,7 +37,6 @@ if (
     if (is_numeric($userId)) {
         $evenement_seen->user_id = $userId;
         $evenement_seen->evenement_id = $evenement->id;
-        $evenement_seen->is_seen = $data->is_seen;
 
         if ($evenement_seen->checkSeenStatus()) {
             if ($evenement_seen->updateSeen()) {
