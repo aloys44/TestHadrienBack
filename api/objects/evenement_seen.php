@@ -118,10 +118,10 @@ class Evenement_Seen
     {
 
         // query to insert record
-        $query = "SELECT id,title,description,creation_date,author,occured_date,status FROM
+        $query = "SELECT * FROM
                 " . $this->table_name . " AS S
                 LEFT JOIN EVENEMENTS AS E ON S.evenement_id = E.id
-                WHERE is_seen < E.creation_date
+                WHERE user_id =: user_id
                 ";
 
         // prepare query
