@@ -7,18 +7,18 @@ header("Content-Type: application/json; charset=UTF-8");
 
 // include database and object files
 include_once '../config/database.php';
-include_once '../objects/evenement.php';
+include_once '../objects/thread.php';
   
 // instantiate database and product object
 $database = new Database();
 $db = $database->getConnection();
   
 // initialize object
-$evenement = new Evenement($db);
+$thread = new Thread($db);
   
 // read products will be here
 // query products
-$stmt = $evenement->getNextEvenement();
+$stmt = $thread->getList();
 $num = $stmt->rowCount();
   
 // check if more than 0 record found
@@ -26,7 +26,7 @@ if ($num > 0) {
   
     // products array
     $products_arr=array();
-    $products_arr["evenementList"]=array();
+    $products_arr["threadList"]=array();
   
     // retrieve our table contents
     // fetch() is faster than fetchAll()
@@ -39,14 +39,13 @@ if ($num > 0) {
   
         $product_item=array(
             "id" => $id,
-            "title" => $title,
-            "description" => $description,
+            "subject" => $subject,
+            "author" => $author,
             "creation_date" => $creation_date,
-            "occured_date" => $occured_date,
-            "status" => $status,
+            "text" => $text
         );
   
-        array_push($products_arr["evenementList"], $product_item);
+        array_push($products_arr["threadList"], $product_item);
     }
   
     // set response code - 200 OK
@@ -61,6 +60,6 @@ if ($num > 0) {
   
     // tell the user no products found
     echo json_encode(
-        array("message" => "Aucun évènement trouvé.")
+        array("message" => "No Thread found.")
     );
 }

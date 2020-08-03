@@ -9,7 +9,7 @@ class Evenement_Seen
     // object properties
     public $evenement_id ;
     public $user_id;
-    public $is_seen;
+    public $is_delete;
 
     // constructor with $db as database connection
     public function __construct($db)
@@ -87,7 +87,7 @@ class Evenement_Seen
         $query = "UPDATE
                     " . $this->table_name . "
                 SET
-                    is_seen = :is_seen
+                    is_delete = :is_delete
                 WHERE
                     evenement_id=:evenement_id AND
                     user_id=:user_id";
@@ -98,12 +98,12 @@ class Evenement_Seen
         // sanitize
         $this->evenement_id = htmlspecialchars(strip_tags($this->evenement_id));
         $this->user_id = htmlspecialchars(strip_tags($this->user_id));
-        $this->is_seen = htmlspecialchars(strip_tags($this->is_seen));
+        $this->is_delete = htmlspecialchars(strip_tags($this->is_delete));
 
         // bind values
         $stmt->bindParam(":evenement_id", $this->evenement_id);
         $stmt->bindParam(":user_id", $this->user_id);
-        $stmt->bindParam(":is_seen", $this->is_seen);
+        $stmt->bindParam(":is_delete", $this->is_delete);
 
 
         // execute the query
@@ -114,29 +114,37 @@ class Evenement_Seen
         return false;
     }
 
-    function getNotSeenList()
+    function delete()
     {
 
-        // query to insert record
-        $query = "SELECT * FROM
-                " . $this->table_name . " AS S
-                LEFT JOIN EVENEMENTS AS E ON S.evenement_id = E.id
-                WHERE user_id =: user_id
-                ";
+        // update query
+        $query = "UPDATE
+                    
+                    " . $this->table_name . " 
+                SET
+                    evenement_id=:evenement_id, 
+                    user_id=:user_id,
+                    is_delete=1
+                WHERE
+                evenement_id=:evenement_id 
+                AND user_id=:user_id";
 
-        // prepare query
+        // prepare query statement
         $stmt = $this->conn->prepare($query);
 
         // sanitize
-        $this->evenement_id = htmlspecialchars(strip_tags($this->user_id));
+        $this->evenement_id = htmlspecialchars(strip_tags($this->evenement_id));
+        $this->user_id = htmlspecialchars(strip_tags($this->user_id));
 
-        // bind values
+
+        // bind new values
+
+        $stmt->bindParam(":evenement_id", $this->evenement_id);
         $stmt->bindParam(":user_id", $this->user_id);
 
-        // execute the query
+
         $stmt->execute();
         return $stmt;
-    }
-
     
+    }
 }

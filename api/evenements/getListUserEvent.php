@@ -10,8 +10,8 @@ include_once '../config/database.php';
 include_once '../objects/evenement.php';
 include_once '../objects/evenement_seen.php';
 include_once '../helpers/check.php';
-
   
+
 // instantiate database and product object
 $database = new Database();
 $db = $database->getConnection();
@@ -21,8 +21,7 @@ $evenement = new Evenement($db);
 $evenement_seen = new Evenement_Seen($db);
 $check = new Check($db);
 
-
-// get id of product to be edited
+  
 $data = json_decode(file_get_contents("php://input"));
 
 // make sure data is not empty
@@ -37,7 +36,7 @@ if (
 
     // read products will be here
     // query products
-    $stmt = $evenement->getNotSeenList();
+    $stmt = $evenement->getListUserEvent();
     $num = $stmt->rowCount();
     
     // check if more than 0 record found
@@ -45,7 +44,7 @@ if (
     
         // products array
         $products_arr=array();
-        $products_arr["evenementNotSeenList"]=array();
+        $products_arr["evenementUserList"]=array();
     
         // retrieve our table contents
         // fetch() is faster than fetchAll()
@@ -66,7 +65,7 @@ if (
                 "status" => $status,
             );
     
-            array_push($products_arr["evenementNotSeenList"], $product_item);
+            array_push($products_arr["evenementUserList"], $product_item);
         }
     
                 // set response code - 200 OK

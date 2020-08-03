@@ -15,6 +15,7 @@ class User
     public $email;
     public $experience;
     public $photo;
+    public $quantiteDechets;
     public $roles;
     public $last_connection;
     public $auth_token;
@@ -148,6 +149,120 @@ class User
 
         return false;
     }
+    
+    function promoteRank1()
+    {
+
+        // update query
+        $query = "UPDATE
+                    " . $this->table_name . " AS U
+                LEFT JOIN SORTIES_INSCRIPTION AS S ON S.users_id =:id
+                SET
+                    experience = '1'
+                WHERE
+                ( SELECT count(*) FROM sorties_inscription
+                WHERE sorties_inscription.users_id=:id) BETWEEN 4 AND 9
+                AND id=:id";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // bind new values
+        $stmt->bindParam(":id", $this->id);
+
+        // execute the query
+        $stmt->execute();
+        return $stmt;
+    }
+
+    
+    function promoteRank2()
+    {
+
+        // update query
+        $query = "UPDATE
+                    " . $this->table_name . " AS U
+                LEFT JOIN SORTIES_INSCRIPTION AS S ON S.users_id =:id
+                SET
+                    experience = '3'
+                WHERE
+                ( SELECT count(*) FROM sorties_inscription
+                WHERE sorties_inscription.users_id=:id)  BETWEEN 9 AND 14";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // bind new values
+        $stmt->bindParam(":id", $this->id);
+
+        // execute the query
+        $stmt->execute();
+        return $stmt;
+    }
+
+    function promoteRank3()
+    {
+
+        // update query
+        $query = "UPDATE
+                    
+                    " . $this->table_name . " AS U
+                LEFT JOIN SORTIES_INSCRIPTION AS S ON S.users_id =:id
+                SET
+                    experience = '4'
+                WHERE
+                ( SELECT count(*) FROM sorties_inscription
+                WHERE sorties_inscription.users_id =:id) BETWEEN 14 AND 19";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // bind new values
+        $stmt->bindParam(":id", $this->id);
+
+        // execute the query
+        $stmt->execute();
+        return $stmt;
+    }
+
+
+    function promoteRank4()
+    {
+
+        // update query
+        $query = "UPDATE
+                    
+                    " . $this->table_name . " AS U
+                LEFT JOIN SORTIES_INSCRIPTION AS S ON S.users_id =:id
+                SET
+                    experience = '5'
+                WHERE
+                ( SELECT count(*) FROM sorties_inscription
+                WHERE sorties_inscription.users_id =:id)>20";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // bind new values
+        $stmt->bindParam(":id", $this->id);
+
+        // execute the query
+        $stmt->execute();
+        return $stmt;
+    }
+
 
     function update()
     {
@@ -155,13 +270,11 @@ class User
         // update query
         $query = "UPDATE
                     
-                    " . $this->table_name . " 
-                SET
-                    password=:password,
-                    firstName=:firstName,
-                    lastName=:lastName,
-                    photo=:photo,
-                    username=:username
+                    " . $this->table_name . " AS U
+                    LEFT JOIN SORTIE_INSCRIPTION S 
+                    ON S.user_id=U.id
+                SET 
+                    experience = 'Coureur confirmé'
                 WHERE
                     email=:email";
 
@@ -267,5 +380,68 @@ class User
         $this->experience = $row['experience'];
         $this->photo = $row['photo'];
         $this->roles = $row['roles'];
+    }
+
+    function UpdateNbDechets()
+    {
+
+        // update query
+        $query = "UPDATE
+                    " . $this->table_name . "
+                    AS U
+                    LEFT JOIN SORTIES_INSCRIPTION AS I 
+                    ON I.users_id=:id
+                    SET 
+                    quantiteDechets=SUM(I.quantiteDechetsRamasses)
+                    WHERE
+                    I.users_id=:id";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+
+        // bind new values
+
+        $stmt->bindParam(":id", $this->id);
+
+
+        // execute the query
+        $stmt->execute();
+        return $stmt;
+    }
+    function getlistPastUserSorties()
+    {
+
+        // update query
+        $query = "SELECT S.id,S.title,S.description,S.runimage,S.walkimage,S.running_date FROM
+                    " . $this->table_name . "
+                    AS U
+                    LEFT JOIN SORTIES_INSCRIPTION AS I
+                    ON I.users_id=:id
+                    LEFT JOIN SORTIES AS S
+                    ON I.sorties_id=S.id
+                    WHERE
+                    I.users_id=:id
+                    GROUP BY S.id
+                    ";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+
+        // bind new values
+
+        $stmt->bindParam(":id", $this->id);
+
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
     }
 }

@@ -8,8 +8,9 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
   
 // include database and object files
 include_once '../config/database.php';
-include_once '../objects/user.php';
-include_once '../helpers/uuid_generator.php';
+include_once '../objects/sortie.php';
+include_once '../objects/sortie_inscription.php';
+include_once '../helpers/check.php';
 
 
 // get database connection
@@ -17,38 +18,31 @@ $database = new Database();
 $db = $database->getConnection();
   
 // prepare product object
-$user = new User($db);
+$sortie = new Sortie($db);
+$sortie_inscription = new SortieInscription($db);
+$check = new Check($db);
 
   
 // get id of product to be edited
 $data = json_decode(file_get_contents("php://input"));
   
 // set ID property of product to be edited
-$user->username = $data->username;
+$userId = $check->check_auth_token($data->auth_token);
 
-// set product property values
-$user->getUser();
+$sortie_inscription->sorties_id = $data->sorties_id;
+$sortie_inscription->id = $userId;
+$sortie_inscription->quantiteDechetsRamasses = $data->quantiteDechetsRamasses;
 
-$user->password =  password_hash($data->password, PASSWORD_DEFAULT);
-$user->firstName = $data->firstName;
-$user->lastName = $data->lastName;
-$user->username = $data->username;
-$user->email = $data->email;
-$user->photo = $data->photo;
 
 
 // update the product
-if($user->update()){
+if($sortie_inscription->IndicationDechets()){
   
 
                 $user_arr = array(
-                    "password" => $user->password,
-                    "username" => $user->username,
-                    "firstName" => $user->firstName,
-                    "lastName" => $user->lastName,
-                    "email" => $user->email,
-                    "photo" => $user->photo,
-                    "auth_token" => $user->auth_token,
+                    "sorties_id" => $sortie_inscription->sorties_id,
+                    "id" => $sortie_inscription->id,
+                    "quantiteDechetsRamasses" => $sortie_inscription->quantiteDechetsRamasses,
                 );
                 // set response code - 200 ok
                 http_response_code(200);

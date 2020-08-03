@@ -76,87 +76,55 @@ class Evenement
         return false;
     }
 
-    function getNextEvenement()
+    function getListUserEvent()
     {
-        // select all query
-        $query = "SELECT * 
-                  FROM " . $this->table_name . " 
-                  ORDER BY creation_date DESC
-                  LIMIT 1";
 
-        // prepare query statement
+        // query to insert record
+        $query = "SELECT * FROM  
+                " . $this->table_name . " AS E
+                LEFT JOIN EVENEMENT_SEEN S 
+                ON S.evenement_id=E.id
+                WHERE S.user_id=:user_id
+                AND is_delete=0
+                ";
+
+        // prepare query
         $stmt = $this->conn->prepare($query);
 
-        // execute query
-        $stmt->execute();
+        // sanitize
+        $this->user_id = htmlspecialchars(strip_tags($this->user_id));
 
+        // bind values
+        $stmt->bindParam(":user_id", $this->user_id);
+
+        // execute the query
+        $stmt->execute();
         return $stmt;
     }
 
 
-    function updateCourse()
+    
+    function getNotSeenList()
     {
 
-        // update query
-        $query = "UPDATE
-                    " . $this->table_name . "
-                SET
-                title=:title, 
-                description=:description, 
-                author=:author,
-                occured_date=:occured_date, 
+        // query to insert record
+        $query = "SELECT * FROM  evenements AS E
+                LEFT JOIN EVENEMENT_SEEN AS S 
+                ON E.id = S.evenement_id AND S.user_id =:user_id
+                WHERE  S.evenement_id IS NULL
+                ";
 
-                WHERE
-                    id = :id";
-
-        // prepare query statement
+        // prepare query
         $stmt = $this->conn->prepare($query);
 
         // sanitize
-        $stmt->bindParam(":title", $this->title);
-        $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":author", $this->author);
-        $stmt->bindParam(":occured_date", $this->occured_date);
-        // bind new values
-        $stmt->bindParam(":title", $this->title);
-        $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":author", $this->author);
-        $stmt->bindParam(":occured_date", $this->occured_date);
+        $this->user_id = htmlspecialchars(strip_tags($this->user_id));
+
+        // bind values
+        $stmt->bindParam(":user_id", $this->user_id);
 
         // execute the query
-        if ($stmt->execute()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    function getEvenementId()
-    {
-        $query = "SELECT id
-                  FROM  " . $this->table_name . "
-                  WHERE                     
-                  title=:title AND
-                  description=:description AND
-                  author=:author AND 
-                  occured_date=:occured_date";
-
-        $stmt = $this->conn->prepare($query);
-
-        $title = htmlspecialchars(strip_tags($this->title));
-        $description = htmlspecialchars(strip_tags($this->description));
-        $author = htmlspecialchars(strip_tags($this->author));
-        $occured_date = htmlspecialchars(strip_tags($this->occured_date));
-
-
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":description", $description);
-        $stmt->bindParam(":author", $author);
-        $stmt->bindParam(":occured_date", $occured_date);
-
         $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $row['id'];
+        return $stmt;
     }
 }

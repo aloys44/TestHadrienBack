@@ -9,6 +9,8 @@ class SortieInscription
     // object properties
     public $sorties_id;
     public $users_id;
+    public $quantiteDechetsRamasses;
+
 
 
     // constructor with $db as database connection
@@ -133,4 +135,40 @@ class SortieInscription
         $stmt->execute();
         return $stmt;
     }
+
+    function IndicationDechets()
+    {
+
+        // update query
+        $query = "UPDATE
+                    " . $this->table_name . "
+                    SET 
+                quantiteDechetsRamasses=:quantiteDechetsRamasses
+                    WHERE
+                sorties_id=:sorties_id
+                    AND 
+                users_id=:id";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->quantiteDechetsRamasses = htmlspecialchars(strip_tags($this->quantiteDechetsRamasses));
+        $this->sorties_id = htmlspecialchars(strip_tags($this->sorties_id));
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+
+        // bind new values
+
+        $stmt->bindParam(":quantiteDechetsRamasses", $this->quantiteDechetsRamasses);
+        $stmt->bindParam(":sorties_id", $this->sorties_id);
+        $stmt->bindParam(":id", $this->id);
+
+
+        // execute the query
+        $stmt->execute();
+        return $stmt;
+    }
+
+
 }

@@ -8,7 +8,7 @@ header("Content-Type: application/json; charset=UTF-8");
 // include database and object files
 include_once '../config/database.php';
 include_once '../objects/sortie.php';
-include_once '../objects/subscription_sortie.php';
+include_once '../objects/sortie_inscription.php';
 
   
 // instantiate database and product object
@@ -16,7 +16,7 @@ $database = new Database();
 $db = $database->getConnection();
   
 // initialize object
-$sorties_inscription = new Subscription_sortie($db);
+$sorties_inscription = new SortieInscription($db);
 
 // get id of product to be edited
 $data = json_decode(file_get_contents("php://input"));

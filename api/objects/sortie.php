@@ -148,11 +148,12 @@ class Sortie
         $query = "SELECT id
                   FROM  " . $this->table_name . "
                   WHERE                     
-                  title=:title AND
-                  description=:description AND
-                  author=:author AND 
-                  nbMaxWalk_participants=:nbMaxWalk_participants AND 
-                  nbMaxRun_participants=:nbMaxRun_participants";
+                  title=:title, 
+                description=:description, 
+                author=:author,
+                nbMaxWalk_participants=:nbMaxWalk_participants,
+                nbMaxRun_participants=:nbMaxRun_participants,
+                running_date=:running_date";
 
         $stmt = $this->conn->prepare($query);
 
@@ -174,4 +175,38 @@ class Sortie
 
         return $row['id'];
     }
+
+    function delete()
+    {
+
+        // update query
+        $query = "UPDATE
+                    
+                    " . $this->table_name . " 
+                SET
+                    title=title, 
+                    description=description, 
+                    author=author,
+                    nbMaxWalk_participants=nbMaxWalk_participants,
+                    nbMaxRun_participants=nbMaxRun_participants,
+                    running_date=running_date,
+                    status=0
+                WHERE
+                    id = :id";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // bind new values
+        $stmt->bindParam(":id", $this->id);
+
+        $stmt->execute();
+        return $stmt;
+    
+    }
+
+    
 }

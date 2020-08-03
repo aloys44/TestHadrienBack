@@ -27,17 +27,17 @@ $data = json_decode(file_get_contents("php://input"));
 
 // make sure data is not empty
 if (
-    !empty($data->auth_token)
+    !empty($data->auth_token) &&
+    !empty($data->evenement_id)
 ) {
     // set product property values
     $userId = $check->check_auth_token($data->auth_token);
-    $evenement->user_id = $userId;
-
-
+    $evenement_seen->user_id = $userId;
+    $evenement_seen->evenement_id = $data->evenement_id;
 
     // read products will be here
     // query products
-    $stmt = $evenement->getNotSeenList();
+    $stmt = $evenement_seen->delete();
     $num = $stmt->rowCount();
     
     // check if more than 0 record found
@@ -45,7 +45,7 @@ if (
     
         // products array
         $products_arr=array();
-        $products_arr["evenementNotSeenList"]=array();
+        $products_arr["evenementDelete"]=array();
     
         // retrieve our table contents
         // fetch() is faster than fetchAll()
@@ -57,23 +57,21 @@ if (
             extract($row);
     
             $product_item=array(
-                "id" => $id,
-                "title" => $title,
-                "description" => $description,
-                "author" => $author,
-                "creation_date" => $creation_date,
-                "occured_date" => $occured_date,
-                "status" => $status,
+                "user_id" => $user_id,
+                "evenement_id" => $evenement_id,
+                "is_delete" => $is_delete
             );
     
-            array_push($products_arr["evenementNotSeenList"], $product_item);
+            array_push($products_arr["evenementDelete"], $product_item);
         }
     
                 // set response code - 200 OK
                 http_response_code(200);
             
                 // show products data in json format
-                echo json_encode($products_arr);
+                echo json_encode(
+                    array("message" => "L'évènement a été modifié.")
+                );
             } else {
             
                 // set response code - 404 Not found
