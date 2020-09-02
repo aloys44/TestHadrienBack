@@ -28,11 +28,11 @@ $data = json_decode(file_get_contents("php://input"));
 if (
     !empty($data->id) &&
     isset($data->is_liked) &&
-    !empty($data->auth_token)
+    !empty($data->authToken)
 ) {
     // set product property values
     $suggestion->id = $data->id;
-    $userId = $check->check_auth_token($data->auth_token);
+    $userId = $check->check_authToken($data->authToken);
 
     if (is_numeric($userId)) {
         $suggestionLikeCount->author_id = $userId;

@@ -37,6 +37,30 @@ class Thread
         return $stmt;
     }
 
+        // read products
+        function getCurrentThread()
+        {
+    
+            // select all query
+            $query = "SELECT * FROM " . $this->table_name. "
+            WHERE id=:id";
+    
+            // prepare query statement
+            $stmt = $this->conn->prepare($query);
+
+            // sanitize
+            $this->id = htmlspecialchars(strip_tags($this->id));
+
+            // bind values
+            $stmt->bindParam(":id", $this->id);
+    
+            // execute query
+            $stmt->execute();
+    
+            return $stmt;
+        }
+    
+
     // create product
     function create()
     {

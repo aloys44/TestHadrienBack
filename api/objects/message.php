@@ -77,5 +77,29 @@ class Message
         return false;
     }
 
+    function getMessagesSorted()
+    {
+    
+        // select all query
+        $query = "SELECT
+                    * 
+                FROM
+                    " . $this->table_name . " 
+                    WHERE thread=:thread ";
+    
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        $this->thread = htmlspecialchars(strip_tags($this->thread));
+
+        $stmt->bindParam(":thread", $this->thread);
+
+    
+        // execute query
+        $stmt->execute();
+    
+        return $stmt;
+}
+
 
 }

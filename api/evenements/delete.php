@@ -27,11 +27,11 @@ $data = json_decode(file_get_contents("php://input"));
 
 // make sure data is not empty
 if (
-    !empty($data->auth_token) &&
+    !empty($data->authToken) &&
     !empty($data->evenement_id)
 ) {
     // set product property values
-    $userId = $check->check_auth_token($data->auth_token);
+    $userId = $check->check_authToken($data->authToken);
     $evenement_seen->user_id = $userId;
     $evenement_seen->evenement_id = $data->evenement_id;
 

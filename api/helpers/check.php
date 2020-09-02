@@ -11,16 +11,16 @@ class Check
         $this->conn = $db;
     }
 
-    function check_auth_token($auth_token)
+    function check_authToken($authToken)
     {
         $query = "SELECT id
                   FROM USERS
-                  WHERE auth_token=:auth_token";
+                  WHERE authToken=:authToken";
 
         $stmt = $this->conn->prepare($query);
 
-        $auth_token = htmlspecialchars(strip_tags($auth_token));
-        $stmt->bindParam(":auth_token", $auth_token);
+        $authToken = htmlspecialchars(strip_tags($authToken));
+        $stmt->bindParam(":authToken", $authToken);
 
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

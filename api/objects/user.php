@@ -18,7 +18,7 @@ class User
     public $quantiteDechets;
     public $roles;
     public $last_connection;
-    public $auth_token;
+    public $authToken;
     public $remember_account;
 
 
@@ -82,7 +82,7 @@ class User
         $query = "UPDATE
                 " . $this->table_name . "
             SET
-                auth_token = :auth_token
+                authToken = :authToken
             WHERE
                 username = :username AND
                 password = :password";
@@ -91,12 +91,12 @@ class User
         $stmt = $this->conn->prepare($query);
 
         // sanitize
-        $this->auth_token = htmlspecialchars(strip_tags($this->auth_token));
+        $this->authToken = htmlspecialchars(strip_tags($this->authToken));
         $this->username = htmlspecialchars(strip_tags($this->username));
         $this->password = htmlspecialchars(strip_tags($this->password));
 
         // bind new values
-        $stmt->bindParam(':auth_token', $this->auth_token);
+        $stmt->bindParam(':authToken', $this->authToken);
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':password', $this->password);
 
@@ -355,16 +355,16 @@ class User
                 FROM
                     " . $this->table_name . " 
                 WHERE
-                    auth_token = :auth_token";
+                    authToken = :authToken";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
         // sanitize
-        $this->auth_token = htmlspecialchars(strip_tags($this->auth_token));
+        $this->authToken = htmlspecialchars(strip_tags($this->authToken));
 
         // bind values
-        $stmt->bindParam(":auth_token", $this->auth_token);
+        $stmt->bindParam(":authToken", $this->authToken);
 
         // execute query
         $stmt->execute();

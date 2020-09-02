@@ -30,7 +30,7 @@ $user->getUser();
 if ($user->password != null) {
 
     if (password_verify($user->password, password_hash($user->password, PASSWORD_DEFAULT))) {
-        $user->auth_token = guidv4();
+        $user->authToken = guidv4();
 
         if($user->updateLogin()){
   
@@ -43,7 +43,7 @@ if ($user->password != null) {
                 "experience" => $user->experience,
                 "photo" => $user->photo,
                 "roles" => $user->roles,
-                "auth_token" => $user->auth_token
+                "authToken" => $user->authToken
 
             );
           

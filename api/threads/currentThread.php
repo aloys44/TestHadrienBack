@@ -7,40 +7,36 @@ header("Content-Type: application/json; charset=UTF-8");
 
 // include database and object files
 include_once '../config/database.php';
-include_once '../objects/User.php';
-include_once '../objects/sortie_inscription.php';
-include_once '../helpers/check.php';
-
+include_once '../objects/thread.php';
   
 // instantiate database and product object
 $database = new Database();
 $db = $database->getConnection();
   
-// prepare product object
-$user = new User($db);
-$sortie_inscription = new SortieInscription($db);
-$check = new Check($db);
-
-  
+// initialize object
+$thread = new Thread($db);
+ 
 $data = json_decode(file_get_contents("php://input"));
 
-// make sure data is not empty
-    $user->authToken = $data->authToken;
 // read products will be here
+
+if (
+    !empty($data->id)
+) {
 // query products
-$userId = $check->check_authToken($data->authToken);
-$user->id = $userId;
 
-
-$stmt = $user->getlistPastUserSorties();
-$num = $stmt->rowCount();
+    $id = $data->id;
+    $thread->id=$id;
+    
+    $stmt = $thread->getCurrentThread();
+    $num = $stmt->rowCount();
   
 // check if more than 0 record found
 if ($num > 0) {
   
     // products array
     $products_arr=array();
-    $products_arr["ListPastUserSorties"]=array();
+    $products_arr["threadList"]=array();
   
     // retrieve our table contents
     // fetch() is faster than fetchAll()
@@ -53,14 +49,13 @@ if ($num > 0) {
   
         $product_item=array(
             "id" => $id,
-            "title" => $title,
-            "description" => $description,
-            "runimage" => $runimage,
-            "walkimage" => $walkimage,
-            "running_date" => $running_date,
+            "subject" => $subject,
+            "author" => $author,
+            "creation_date" => $creation_date,
+            "text" => $text
         );
   
-        array_push($products_arr["ListPastUserSorties"], $product_item);
+        array_push($products_arr["threadList"], $product_item);
     }
   
     // set response code - 200 OK
@@ -75,6 +70,11 @@ if ($num > 0) {
   
     // tell the user no products found
     echo json_encode(
-        array("message" => "Aucune sortie trouvée.")
+        array("message" => "No Thread found.")
     );
+}
+} else {
+    
+    http_response_code(503);
+    echo json_encode(array("message" => "Impossible d'avoir liste threads. Data is incomplete."));
 }

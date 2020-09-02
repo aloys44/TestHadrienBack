@@ -28,7 +28,7 @@ $data = json_decode(file_get_contents("php://input"));
 if (
     !empty($data->title) &&
     !empty($data->description) &&
-    !empty($data->auth_token)
+    !empty($data->authToken)
 ) {
 
     // set product property values
@@ -36,7 +36,7 @@ if (
     $suggestion->description = $data->description;
 
 
-    $userId = $check->check_auth_token($data->auth_token);
+    $userId = $check->check_authToken($data->authToken);
 
 
     if (is_numeric($userId)) {

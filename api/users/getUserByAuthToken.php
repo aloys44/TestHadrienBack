@@ -22,7 +22,7 @@ $user = new User($db);
 // get id of product to be edited
 $data = json_decode(file_get_contents("php://input"));
 
-$user->auth_token = $data->auth_token;
+$user->authToken = $data->authToken;
 
 // read the details of product to be edited
 $user->getUserByAuthToken();
@@ -39,7 +39,7 @@ if ($user->username != null) {
         "experience" => $user->experience,
         "photo" => $user->photo,
         "roles" => $user->roles,
-        "auth_token" => $user->auth_token
+        "authToken" => $user->authToken
 
     );
 

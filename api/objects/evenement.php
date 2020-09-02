@@ -109,7 +109,7 @@ class Evenement
 
         // query to insert record
         $query = "SELECT * FROM  evenements AS E
-                LEFT JOIN EVENEMENT_SEEN AS S 
+                LEFT JOIN evenement_seen AS S 
                 ON E.id = S.evenement_id AND S.user_id =:user_id
                 WHERE  S.evenement_id IS NULL
                 ";

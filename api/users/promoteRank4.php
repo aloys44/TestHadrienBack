@@ -23,10 +23,10 @@ $check = new Check($db);
 $data = json_decode(file_get_contents("php://input"));
 
 // make sure data is not empty
-    $user->auth_token = $data->auth_token;
+    $user->authToken = $data->authToken;
 
     // set product property values
-    $userId = $check->check_auth_token($data->auth_token);
+    $userId = $check->check_authToken($data->authToken);
     $user->id = $userId;
 
     // read products will be here
@@ -43,7 +43,7 @@ $data = json_decode(file_get_contents("php://input"));
             "lastName" => $user->lastName,
             "email" => $user->email,
             "photo" => $user->photo,
-            "auth_token" => $user->auth_token,
+            "authToken" => $user->authToken,
         );
         // set response code - 200 ok
         http_response_code(200);

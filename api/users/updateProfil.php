@@ -48,7 +48,7 @@ if($user->update()){
                     "lastName" => $user->lastName,
                     "email" => $user->email,
                     "photo" => $user->photo,
-                    "auth_token" => $user->auth_token,
+                    "authToken" => $user->authToken,
                 );
                 // set response code - 200 ok
                 http_response_code(200);

@@ -27,7 +27,7 @@ $check = new Check($db);
 $data = json_decode(file_get_contents("php://input"));
   
 // set ID property of product to be edited
-$userId = $check->check_auth_token($data->auth_token);
+$userId = $check->check_authToken($data->authToken);
 
 $sortie_inscription->sorties_id = $data->sorties_id;
 $sortie_inscription->id = $userId;

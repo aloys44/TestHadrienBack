@@ -27,10 +27,10 @@ $data = json_decode(file_get_contents("php://input"));
 
 // make sure data is not empty
 if (
-    !empty($data->auth_token)
+    !empty($data->authToken)
 ) {
     // set product property values
-    $userId = $check->check_auth_token($data->auth_token);
+    $userId = $check->check_authToken($data->authToken);
     $evenement->user_id = $userId;
 
 
@@ -65,7 +65,6 @@ if (
                 "occured_date" => $occured_date,
                 "status" => $status,
             );
-    
             array_push($products_arr["evenementNotSeenList"], $product_item);
         }
     
